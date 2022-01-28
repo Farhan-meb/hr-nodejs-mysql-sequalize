@@ -3,6 +3,7 @@ const db = require('./database');
 const middlewares = require('./middlewares');
 const router = require('./routes');
 const appError = require('./utils/appError');
+const _delete = require('./helpers/deleteFolderFiles');
 
 const app = express();
 
@@ -23,5 +24,7 @@ db.sequelize.sync().then(function () {
 app.all('*', (req, _, next) => {
     next(new appError(`Cannot find ${req.originalUrl} on this server`, 404));
 });
+
+_delete.deleteImages();
 
 module.exports = app;

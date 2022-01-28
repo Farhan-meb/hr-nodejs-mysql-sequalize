@@ -8,6 +8,7 @@ const appError = require('../../utils/appError');
 const AppError = require("../../utils/appError");
 const email = require('../../helpers/email');
 
+
 const addEmployee = catchAsync(async (req, res, next) => {
     const { first_name, last_name, email } = req.body;
 
@@ -21,7 +22,7 @@ const addEmployee = catchAsync(async (req, res, next) => {
         email
     };
 
-    Employee.create(employee)
+    await Employee.create(employee)
         .then(data => {
             res.status(201).json({
                 message: 'Successfully created employee!',
@@ -46,7 +47,7 @@ const getAllEmployees = catchAsync(async (req, res, next) => {
     const condition = email ? { email: { [Op.like]: `%${email}%` } } : null;
 
 
-    Employee.findAll({
+    await Employee.findAll({
         limit: limit,
         offset: (page - 1) * limit,
         where: condition,
@@ -96,17 +97,50 @@ const importBulkEmployees = catchAsync(async (req, res, next) => {
 
     const file = req.file;
 
-    console.log(file);
+    let added = 0, skipped = 0;
+
+    let addedEmployees = [], failedEmployees = [];
+
 
     fs.createReadStream('./uploads/' + file.filename)
         .pipe(csv({}))
         .on('data', async (data) => {
             let totalLength = data && Object.values(data).length;
-            console.log(data);
+            const { first_name, last_name, email } = data;
+
+            if (!first_name || !last_name || !email) {
+                skipped += 1;
+            }
+            else {
+                const employee = {
+                    first_name,
+                    last_name,
+                    email
+                };
+
+                await Employee.create(employee)
+                    .then(data => {
+                        added += 1;
+                        console.log(added);
+                        addedEmployees.push(data);
+                    })
+                    .catch(err => {
+                        skipped += 1;
+                        failedEmployees.push(employee);
+                    });
+            }
+
         })
         .on('end', async () => {
-
+            console.log(added);
+            res.status(201).json({
+                message: 'Employees successfully added : ' + added + '\n Employees failed adding : ' + skipped,
+                addedEmployees,
+                failedEmployees,
+            })
         });
+
+    console.log('added!', added);
 })
 
 module.exports = { addEmployee, getAllEmployees, sendEmail, importBulkEmployees }
