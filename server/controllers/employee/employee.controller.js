@@ -122,7 +122,6 @@ const importBulkEmployees = catchAsync(async (req, res, next) => {
                         added += 1;
                         console.log(added);
                         addedEmployees.push(data);
-
                     })
                     .catch(err => {
                         skipped += 1;
@@ -131,8 +130,8 @@ const importBulkEmployees = catchAsync(async (req, res, next) => {
             }
 
         })
-        .on('end', async () => {
-            console.log(added);
+        .on('end', () => {
+            console.log('end');
             res.status(201).json({
                 message: 'Employees successfully added : ' + added + '\n Employees failed adding : ' + skipped,
                 addedEmployees,
