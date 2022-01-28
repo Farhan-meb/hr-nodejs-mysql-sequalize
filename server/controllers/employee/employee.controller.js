@@ -38,11 +38,15 @@ const addEmployee = catchAsync(async (req, res, next) => {
 const getAllEmployees = catchAsync(async (req, res, next) => {
     const { email } = req.body;
 
+    const limit = parseInt(req.query.limit), page = parseInt(req.query.page);
+
     //if needed to search employees by email in future
     const condition = email ? { email: { [Op.like]: `%${email}%` } } : null;
 
 
     Employee.findAll({
+        limit: limit,
+        offset: (page - 1) * limit,
         where: condition,
         order: [
             ['createdAt', 'DESC']
