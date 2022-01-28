@@ -12,9 +12,13 @@ app.use(...middlewares);
 
 router.registerApplicationRoutes(app);
 
-db.sequelize.sync({ force: true }).then(() => {
-    console.log('Drop and Resync with { force: true }');
+db.sequelize.sync().then(function () {
+    console.log('DB connected!');
+}, function (err) {
+    console.log(err);
 });
+
+
 
 app.all('*', (req, _, next) => {
     next(new appError(`Cannot find ${req.originalUrl} on this server`, 404));

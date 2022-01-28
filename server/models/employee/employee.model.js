@@ -1,15 +1,29 @@
-module.exports = (sequelize, Sequelize) => {
-    const Customer = sequelize.define('customer', {
-        firstname: {
-            type: Sequelize.STRING,
-        },
-        lastname: {
-            type: Sequelize.STRING,
-        },
-        age: {
-            type: Sequelize.INTEGER,
-        },
-    });
+module.exports = (sequelize, DataTypes) => {
+  const Employee = sequelize.define("employee", {
+    first_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: { arg: [2, 30], msg: 'First name must contain 2-30 characters!' }
+      }
+    },
+    last_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: { arg: [2, 30], msg: 'First name must contain 2-30 characters!' }
+      }
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: [2, 40],
+        isEmail: { arg: true, msg: 'Please provide a valid email!' }
+      }
+    }
 
-    return Customer;
+  });
+
+  return Employee;
 };
