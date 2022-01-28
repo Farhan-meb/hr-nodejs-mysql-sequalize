@@ -101,7 +101,6 @@ const importBulkEmployees = catchAsync(async (req, res, next) => {
 
     let addedEmployees = [], failedEmployees = [];
 
-
     fs.createReadStream('./uploads/' + file.filename)
         .pipe(csv({}))
         .on('data', async (data) => {
@@ -123,6 +122,7 @@ const importBulkEmployees = catchAsync(async (req, res, next) => {
                         added += 1;
                         console.log(added);
                         addedEmployees.push(data);
+
                     })
                     .catch(err => {
                         skipped += 1;
