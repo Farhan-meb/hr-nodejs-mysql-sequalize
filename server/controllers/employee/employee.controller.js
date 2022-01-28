@@ -1,6 +1,8 @@
 const db = require("../../database");
 const Employee = db.employees;
 const Op = db.Sequelize.Op;
+const fs = require('fs');
+const csv = require('csv-parser');
 const catchAsync = require('../../utils/catchAsync');
 const appError = require('../../utils/appError');
 const AppError = require("../../utils/appError");
@@ -88,4 +90,23 @@ const sendEmail = catchAsync(async (req, res, next) => {
 
 })
 
-module.exports = { addEmployee, getAllEmployees, sendEmail }
+const importBulkEmployees = catchAsync(async (req, res, next) => {
+
+    console.log('duksi');
+
+    const file = req.file;
+
+    console.log(file);
+
+    fs.createReadStream('./uploads/' + file.filename)
+        .pipe(csv({}))
+        .on('data', async (data) => {
+            let totalLength = data && Object.values(data).length;
+            console.log(data);
+        })
+        .on('end', async () => {
+
+        });
+})
+
+module.exports = { addEmployee, getAllEmployees, sendEmail, importBulkEmployees }
