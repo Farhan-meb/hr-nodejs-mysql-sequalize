@@ -70,11 +70,28 @@ const getAllEmployees = catchAsync(async (req, res, next) => {
 const sendEmail = catchAsync(async (req, res, next) => {
     const { emails, subject, body } = req.body;
 
-    if (!emails) return next(new AppError('Email cannot be empty!'));
-    if (!subject) return next(new AppError('Subject cannot be empty!'));
-    if (!body) return next(new AppError('Body cannot be empty!'));
+    let _emails = '';
+    let ind = 1;
 
-    const response = await email.sendEmail(emails, subject, body);
+    for (let email of emails) {
+        if (ind === emails.length) {
+            _emails += email;
+        } else {
+            _emails += email;
+            _emails += ',';
+        }
+        ind += 1;
+    }
+
+    if (emails.length <= 0) return next(new AppError('Email cannot be empty!'));
+    //if (!subject) return next(new AppError('Subject cannot be empty!'));
+    //if (!body) return next(new AppError('Body cannot be empty!'));
+
+    const response = await email.sendEmail(
+        _emails,
+        'hello',
+        'testing from frontend'
+    );
 
     if (response) {
         res.status(200).json({
