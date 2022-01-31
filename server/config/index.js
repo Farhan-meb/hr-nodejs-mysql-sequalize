@@ -23,13 +23,13 @@ module.exports = {
         },
     },
     mail: {
-        from: process.env.EMAIL_ADDRESS || 'tesing.node.js@gmail.com',
+        from: process.env.EMAIL_ADDRESS || 'hrmanagementtask@gmail.com',
         port: process.env.EMAIL_PORT || 587,
         host: process.env.EMAIL_HOST || 'smtp.gmail.com',
         transport_method: process.env.EMAIL_TRANSPORT || 'SMTP',
         secure_connection: Boolean(process.env.EMAIL_TLS == 'true'),
         auth: {
-            user: process.env.EMAIL_USER || 'tesing.node.js@gmail.com',
+            user: process.env.EMAIL_USER || 'hrmanagementtask@gmail.com',
             pass: process.env.EMAIL_PASSWORD || 'TestingNodeJs2021',
         },
     },
