@@ -91,8 +91,6 @@ const sendEmail = catchAsync(async (req, res, next) => {
 });
 
 const importBulkEmployees = catchAsync(async (req, res, next) => {
-    console.log('duksi');
-
     const file = req.file;
 
     let added = 0,
@@ -100,6 +98,8 @@ const importBulkEmployees = catchAsync(async (req, res, next) => {
 
     let addedEmployees = [],
         failedEmployees = [];
+
+    const employees = [];
 
     fs.createReadStream('./uploads/' + file.filename)
         .pipe(csv({}))
@@ -109,38 +109,29 @@ const importBulkEmployees = catchAsync(async (req, res, next) => {
             if (!first_name || !last_name || !email) {
                 skipped += 1;
             } else {
-                const employee = {
-                    first_name,
-                    last_name,
-                    email,
-                };
-
+                employees.push(data);
+            }
+        })
+        .on('end', async () => {
+            for (let employee of employees) {
                 await Employee.create(employee)
                     .then((data) => {
                         added += 1;
-                        console.log(added);
                         addedEmployees.push(data);
                     })
-                    .catch((err) => {
+                    .catch(() => {
                         skipped += 1;
                         failedEmployees.push(employee);
                     });
             }
-        })
-        .on('end', () => {
-            console.log('end');
+
             res.status(201).json({
-                message:
-                    'Employees successfully added : ' +
-                    added +
-                    '\n Employees failed adding : ' +
-                    skipped,
+                succeeded: 'Employee successfully imported ' + added,
+                failed: 'Employee failed to import ' + skipped,
                 addedEmployees,
                 failedEmployees,
             });
         });
-
-    console.log('added!', added);
 });
 
 module.exports = {

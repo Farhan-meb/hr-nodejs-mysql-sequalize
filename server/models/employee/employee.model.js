@@ -5,10 +5,10 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             validate: {
                 len: [2, 32],
-                isAlpha: {
-                    arg: true,
-                    msg: 'Please provide a valid first name!',
-                },
+                // isAlpha: {
+                //     arg: true,
+                //     msg: 'Please provide a valid first name!',
+                // },
             },
         },
         last_name: {
@@ -23,10 +23,10 @@ module.exports = (sequelize, DataTypes) => {
                     args: [4],
                     msg: 'Minimum 4 characters required in last name',
                 },
-                isAlpha: {
-                    arg: true,
-                    msg: 'Please provide a valid last name!',
-                },
+                // isAlpha: {
+                //     arg: true,
+                //     msg: 'Please provide a valid last name!',
+                // },
             },
         },
         email: {
