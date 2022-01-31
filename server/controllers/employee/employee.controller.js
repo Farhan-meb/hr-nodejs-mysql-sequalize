@@ -7,6 +7,7 @@ const catchAsync = require('../../utils/catchAsync');
 const appError = require('../../utils/appError');
 const AppError = require('../../utils/appError');
 const email = require('../../helpers/email');
+const e = require('express');
 
 const addEmployee = catchAsync(async (req, res, next) => {
     const { first_name, last_name, email } = req.body;
@@ -14,6 +15,16 @@ const addEmployee = catchAsync(async (req, res, next) => {
     if (!first_name) return next(new AppError('First Name cannot be empty!'));
     if (!last_name) return next(new AppError('Last Name cannot be empty!'));
     if (!email) return next(new AppError('Email cannot be empty!'));
+
+    await Employee.findOne({
+        where: { email: email },
+    }).then((employee) => {
+        if (employee) {
+            return res.status(500).json({
+                message: 'Employee already exists with given email!',
+            });
+        }
+    });
 
     const employee = {
         first_name,
@@ -114,12 +125,27 @@ const importBulkEmployees = catchAsync(async (req, res, next) => {
         })
         .on('end', async () => {
             for (let employee of employees) {
+                let doestExist = false;
+
+                await Employee.findOne({
+                    where: { email: employee.email },
+                }).then((existedEmployee) => {
+                    if (existedEmployee !== null) {
+                        doestExist = true;
+                    }
+                });
+
+                if (doestExist) {
+                    skipped += 1;
+                    continue;
+                }
+
                 await Employee.create(employee)
                     .then((data) => {
                         added += 1;
                         addedEmployees.push(data);
                     })
-                    .catch(() => {
+                    .catch((err) => {
                         skipped += 1;
                         failedEmployees.push(employee);
                     });
