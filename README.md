@@ -6,5 +6,6 @@
 * Open xampp and start Apache & MySQL server
 * Open browser, go to : http://localhost/phpmyadmin/
 * create database, name : hr_management
-* In opened terminal, Run : npm i
+* In opened terminal, Run: cd server
+* Run : npm i
 * Run: npm start
