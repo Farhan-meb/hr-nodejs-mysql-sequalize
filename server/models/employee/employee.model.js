@@ -4,34 +4,42 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
-                len: [2, 32],
-                // isAlpha: {
-                //     arg: true,
-                //     msg: 'Please provide a valid first name!',
-                // },
+                min: {
+                    args: [4],
+                    msg: 'Minimum 4 characters required in fist name',
+                },
+                max: {
+                    args: [30],
+                    msg: 'Maximum 30 characters allowed in first name',
+                },
+                isAlpha: {
+                    arg: true,
+                    msg: 'First name must contain only alphabetic character!',
+                },
             },
         },
         last_name: {
             type: DataTypes.STRING,
             allowNull: false,
+            min: {
+                args: [4],
+                msg: 'Minimum 4 characters required in last name',
+            },
+            max: {
+                args: [30],
+                msg: 'Maximum 30 characters allowed in last name',
+            },
             validate: {
-                max: {
-                    args: [30],
-                    msg: 'Maximum 30 characters allowed in last name',
+                isAlpha: {
+                    arg: true,
+                    msg: 'First name must contain only alphabetic character!',
                 },
-                min: {
-                    args: [4],
-                    msg: 'Minimum 4 characters required in last name',
-                },
-                // isAlpha: {
-                //     arg: true,
-                //     msg: 'Please provide a valid last name!',
-                // },
             },
         },
         email: {
             type: DataTypes.STRING,
             allowNull: false,
+            unique: true,
             validate: {
                 isEmail: { arg: true, msg: 'Please provide a valid email!' },
             },
