@@ -9,7 +9,7 @@ module.exports = {
     db: {
         mysql: {
             username: process.env.DB_USER || 'root',
-            password: process.env.DB_PASS || '',
+            password: process.env.DB_PASS || '12345678',
             host: process.env.DB_HOST || 'localhost',
             port: process.env.DB_PORT || '27017',
             dbname: process.env.DB_NAME || 'hr_management',
